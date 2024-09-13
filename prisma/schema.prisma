@@ -100,6 +100,7 @@ model veiculos {
   quilometragem    Int?
   status           veiculos_status
   tipo_combustivel String?         @db.VarChar(20)
+  placa            String          @unique(map: "placa_UNIQUE") @db.VarChar(45)
   custos           custos[]
   transacoes       transacoes[]
 }
@@ -120,8 +121,8 @@ enum usuarios_status {
 }
 
 enum pessoas_tipo {
-  Pessoa_Fisica   @map("Pessoa Física")
-  Pessoa_Juridica @map("Pessoa Jurídica")
+  Pessoa_F_sica   @map("Pessoa Física")
+  Pessoa_Jur_dica @map("Pessoa Jurídica")
 }
 
 enum transacoes_status_pagamento {
@@ -132,6 +133,6 @@ enum transacoes_status_pagamento {
 
 enum veiculos_status {
   vendido
-  disponivel @map("disponível")
-  manutencao @map("manutenção")
+  dispon_vel @map("disponível")
+  manuten__o @map("manutenção")
 }
