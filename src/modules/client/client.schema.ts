@@ -27,8 +27,20 @@ const createClientSchema = z.object({
   }),
 });
 
+const defaultClientSchemaQuery = z.object({
+  id_pessoa: z.number(),
+});
+
+const defaultClientSchemarResponse = z.object({
+  message: z.string(),
+});
+
 export type CreateClientInput = z.infer<typeof createClientSchema>;
+
+export type defaultClientQuery = z.infer<typeof defaultClientSchemaQuery>;
 
 export const { schemas: clientSchemas, $ref } = buildJsonSchemas({
   createClientSchema,
+  defaultClientSchemaQuery,
+  defaultClientSchemarResponse,
 });

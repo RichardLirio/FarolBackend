@@ -26,3 +26,30 @@ export async function findClients() {
     },
   });
 }
+
+export async function deleteClient(id_pessoa: number) {
+  const client = await prisma.pessoas.delete({
+    where: {
+      id_pessoa,
+    },
+    select: {
+      id_pessoa: true,
+      nome: true,
+      cnpj_cpf: true,
+    },
+  });
+  return client;
+}
+
+export async function updateClient(
+  input: CreateClientInput,
+  id_pessoa: number
+) {
+  const client = await prisma.pessoas.update({
+    data: input,
+    where: {
+      id_pessoa,
+    },
+  });
+  return client;
+}

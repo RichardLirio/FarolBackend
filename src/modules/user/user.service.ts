@@ -26,7 +26,7 @@ export async function findUserByLogin(login: string) {
 }
 
 export async function findUsers() {
-  return prisma.usuarios.findMany({
+  const users = await prisma.usuarios.findMany({
     select: {
       id_usuario: true,
       nome: true,
@@ -35,10 +35,11 @@ export async function findUsers() {
       status: true,
     },
   });
+  return users;
 }
 
 export async function deleteUser(id_usuario: number) {
-  return prisma.usuarios.delete({
+  const user = await prisma.usuarios.delete({
     where: {
       id_usuario,
     },
@@ -48,6 +49,7 @@ export async function deleteUser(id_usuario: number) {
       tipo_usuario: true,
     },
   });
+  return user;
 }
 
 export async function updateUser(input: updateUserinput, id_usuario: number) {

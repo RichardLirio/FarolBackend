@@ -1,5 +1,10 @@
 import { FastifyInstance } from "fastify";
-import { getClientsHanlder, registerClientHandler } from "./client.controller";
+import {
+  getClientsHanlder,
+  registerClientHandler,
+  deleteClientHandler,
+  updateClientHandler,
+} from "./client.controller";
 import { $ref, clientSchemas } from "./client.schema";
 
 async function clientRoutes(server: FastifyInstance) {
@@ -7,7 +12,7 @@ async function clientRoutes(server: FastifyInstance) {
     server.addSchema(schema);
   }
 
-  //criação de usuario
+  //criação de clientes
   server.register;
   server.post(
     "/",
@@ -30,17 +35,30 @@ async function clientRoutes(server: FastifyInstance) {
   );
 
   // //delete client
-  // server.delete(
-  //   "/",
-  //   {
-  //     schema: {
-  //       querystring: $ref("defaultUserSchemaQuery"),
-  //       response: { 204: $ref("defaultUserSchemarResponse") },
-  //     },
-  //     preHandler: [server.authenticate],
-  //   },
-  //   deleteUserHandler
-  // );
+  server.delete(
+    "/",
+    {
+      schema: {
+        querystring: $ref("defaultClientSchemaQuery"),
+        response: { 204: $ref("defaultClientSchemarResponse") },
+      },
+      preHandler: [server.authenticate],
+    },
+    deleteClientHandler
+  );
+
+  //update client
+  server.put(
+    "/",
+    {
+      schema: {
+        body: $ref("createClientSchema"),
+        querystring: $ref("defaultClientSchemaQuery"),
+      },
+      preHandler: [server.authenticate],
+    },
+    updateClientHandler
+  );
 }
 
 export default clientRoutes;
