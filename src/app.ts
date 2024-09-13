@@ -4,6 +4,7 @@ import userRoutes from "./modules/user/user.route";
 import fjwt from "@fastify/jwt";
 import clientRoutes from "./modules/client/client.route";
 import tipDocRoutes from "./modules/tipoDocumento/tip_doc.route";
+import transactionRoutes from "./modules/transaction/transaction.route";
 
 export const app = fastify();
 
@@ -44,6 +45,7 @@ async function main() {
   app.register(userRoutes, { prefix: "api/users" });
   app.register(clientRoutes, { prefix: "api/clients" });
   app.register(tipDocRoutes, { prefix: "api/tipodocumento" });
+  app.register(transactionRoutes, { prefix: "api/transaction" });
 
   try {
     await app.listen({
