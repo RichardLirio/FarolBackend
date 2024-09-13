@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model custos {
+  id_custo    Int       @id @default(autoincrement())
+  id_veiculo  Int?
+  id_produto  Int?
+  descricao   String    @db.Text
+  valor       Decimal   @db.Decimal(10, 2)
+  valor_total Decimal   @db.Decimal(10, 2)
+  data_custo  DateTime  @db.Date
+  veiculos    veiculos? @relation(fields: [id_veiculo], references: [id_veiculo], onDelete: NoAction, onUpdate: NoAction, map: "custos_ibfk_1")
+  produtos    produtos? @relation(fields: [id_produto], references: [id_produto], onDelete: NoAction, onUpdate: NoAction, map: "custos_ibfk_2")
+
+  @@index([id_produto], map: "id_produto")
+  @@index([id_veiculo], map: "id_veiculo")
+}
+
+model pessoas {
+  id_pessoa          Int          @id @default(autoincrement())
+  nome               String       @db.VarChar(100)
+  endereco           String       @db.VarChar(255)
+  telefone           String?      @db.VarChar(20)
+  cnpj_cpf           String       @unique(map: "cnpj_cpf_UNIQUE") @db.VarChar(20)
+  email              String?      @db.VarChar(100)
+  inscricao_estadual String?      @db.VarChar(50)
+  tipo               pessoas_tipo
+  cidade             String       @db.VarChar(45)
+  uf                 String       @db.VarChar(2)
+  cep                String       @db.VarChar(8)
+  bairro             String       @db.VarChar(45)
+  transacoes         transacoes[]
+}
+
+model produtos {
+  id_produto         Int          @id @default(autoincrement())
+  nome               String       @db.VarChar(100)
+  descricao          String?      @db.Text
+  valor              Decimal      @db.Decimal(10, 2)
+  unidade            String       @db.VarChar(20)
+  quantidade_estoque Int
+  custos             custos[]
+  transacoes         transacoes[]
+}
+
+model tipodocumento {
+  id_tipo_doc Int          @id @default(autoincrement())
+  descricao   String       @db.VarChar(50)
+  transacoes  transacoes[]
+}
+
+model transacoes {
+  id_transacao     Int                         @id @default(autoincrement())
+  id_veiculo       Int?
+  id_produto       Int?
+  id_pessoa        Int
+  tipo             transacoes_tipo
+  valor            Decimal                     @db.Decimal(10, 2)
+  data_transacao   DateTime                    @db.Date
+  documento        String?                     @db.VarChar(50)
+  tipo_documento   Int?
+  status_pagamento transacoes_status_pagamento
+  veiculos         veiculos?                   @relation(fields: [id_veiculo], references: [id_veiculo], onDelete: NoAction, onUpdate: NoAction, map: "transacoes_ibfk_1")
+  produtos         produtos?                   @relation(fields: [id_produto], references: [id_produto], onDelete: NoAction, onUpdate: NoAction, map: "transacoes_ibfk_2")
+  pessoas          pessoas                     @relation(fields: [id_pessoa], references: [id_pessoa], onDelete: NoAction, onUpdate: NoAction, map: "transacoes_ibfk_3")
+  tipodocumento    tipodocumento?              @relation(fields: [tipo_documento], references: [id_tipo_doc], onDelete: NoAction, onUpdate: NoAction, map: "transacoes_ibfk_4")
+
+  @@index([id_pessoa], map: "id_pessoa")
+  @@index([id_produto], map: "id_produto")
+  @@index([id_veiculo], map: "id_veiculo")
+  @@index([tipo_documento], map: "tipo_documento")
+}
+
+model usuarios {
+  id_usuario   Int                   @id @default(autoincrement())
+  nome         String                @db.VarChar(100)
+  login        String                @unique(map: "login") @db.VarChar(50)
+  senha        String                @db.VarChar(255)
+  tipo_usuario usuarios_tipo_usuario
+  status       usuarios_status
+  salt         String                @db.VarChar(45)
+}
+
+model veiculos {
+  id_veiculo       Int             @id @default(autoincrement())
+  modelo           String          @db.VarChar(100)
+  marca            String          @db.VarChar(50)
+  ano              Int             @db.Year
+  cor              String?         @db.VarChar(30)
+  valor_compra     Decimal         @db.Decimal(10, 2)
+  valor_venda      Decimal?        @db.Decimal(10, 2)
+  renavam          String?         @db.VarChar(20)
+  chassi           String?         @db.VarChar(20)
+  quilometragem    Int?
+  status           veiculos_status
+  tipo_combustivel String?         @db.VarChar(20)
+  custos           custos[]
+  transacoes       transacoes[]
+}
+
+enum transacoes_tipo {
+  Compra
+  Venda
+}
+
+enum usuarios_tipo_usuario {
+  Vendedor
+  Administrador
+}
+
+enum usuarios_status {
+  Ativo
+  Inativo
+}
+
+enum pessoas_tipo {
+  Pessoa_Fisica   @map("Pessoa Física")
+  Pessoa_Juridica @map("Pessoa Jurídica")
+}
+
+enum transacoes_status_pagamento {
+  Recebida
+  Paga
+  Em_Aberto @map("Em Aberto")
+}
+
+enum veiculos_status {
+  vendido
+  disponivel @map("disponível")
+  manutencao @map("manutenção")
+}
