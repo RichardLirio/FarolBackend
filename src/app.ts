@@ -43,11 +43,13 @@ async function main() {
     routePrefix: "/documentation",
   });
 
-  app.register(userRoutes, { prefix: "api/users" });
-  app.register(clientRoutes, { prefix: "api/clients" });
-  app.register(tipDocRoutes, { prefix: "api/tipodocumento" });
-  app.register(transactionRoutes, { prefix: "api/transacao" });
-  app.register(veiculoRoutes, { prefix: "api/veiculo" });
+  const versao = "v1";
+
+  app.register(userRoutes, { prefix: `${versao}/users` });
+  app.register(clientRoutes, { prefix: `${versao}/clients` });
+  app.register(tipDocRoutes, { prefix: `${versao}/tipodocumento` });
+  app.register(transactionRoutes, { prefix: `${versao}/transacao` });
+  app.register(veiculoRoutes, { prefix: `${versao}/veiculo` });
 
   try {
     await app.listen({
